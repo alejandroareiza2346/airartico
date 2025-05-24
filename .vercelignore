@@ -3,3 +3,8 @@ staticfiles/
 __pycache__/
 *.pyc
 *.log
+migrations/
+*.sqlite3
+*.tar.gz
+*.zip
+.venv/
