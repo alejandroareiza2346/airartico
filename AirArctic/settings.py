@@ -31,12 +31,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-fu8rk=)nh3+a&dh0zge=qbemkq3$=h6hq-*2)b)v*0opro_k&('
+SECRET_KEY = 'p4687@)tj!g4i^41!9%vqvnfg!hn96-pih$7f7w8j-g3=yxf(*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app']
+ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1']
 
 
 # Application definition
