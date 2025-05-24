@@ -1,0 +1,78 @@
+{% load django_bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+      table,th, td {
+  padding: 15px;
+}
+    </style>
+</head>
+<body>
+
+    <table style="border: 2px solid black;">
+       
+        <th>FlightId</th>
+        <th>FlightNumber</th>
+        <th>Aircraft</th>
+        <th>Departure Airport</th>
+        <th>Destination Airport</th>
+        <th>Departure Date</th>
+        <th>Departure Time</th>
+        <th>Arrival Date</th>
+        <th>Arrival Time</th> 
+        <th>Price</th> 
+        <th>Select Flight</th>
+
+        {% for flight in flights %}
+
+        <tr style="border: 1px solid black;">
+           <td>{{flight.id}}</td>
+           <td>{{flight.flightNumber}}</td>
+           <td>{{flight.airCraft.aircraftModel}}</td>
+           <td>{{flight.departureAirport.iataCode}}</td>
+           <td>{{flight.destinationAirport.iataCode}}</td>
+           <td>{{flight.departureDate}}</td>
+           <td>{{flight.departureTime}}</td>
+           <td>{{flight.arrivalDate}}</td>
+           <td>{{flight.arrivalTime}}</td>
+           <td>{{flight.price}}</td>
+           <td> <button class="flight" type="button">Select Flight</button> </td>
+        </tr>
+
+        {% endfor %}
+
+           
+
+
+    </table>
+    
+</body>
+</html>
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        {% if items.has_previous %}
+      <li class="page-item"><a class="page-link" href="/api/flightDisplay/?page=1">First</a></li>
+      <li class="page-item"><a class="page-link" href="/api/flightDisplay/?page={{items.previous_page_number}}">Previous</a></li>
+        {% endif %}
+
+        {% for n in totalPageList %}
+      <li class="page-item"><a class="page-link" href="/api/flightDisplay/?page={{n}}">{{n}}</a></li>
+        {% endfor %}
+
+      {% if items.has_next %}
+      <li class="page-item"><a class="page-link" href="/api/flightDisplay/?page={{items.next_page_number}}">Next</a></li>
+      <li class="page-item"><a class="page-link" href="/api/flightDisplay/?page={{lastpage}}">Last</a></li>
+      {% endif %}
+
+      
+    </ul>
+  </nav>
+

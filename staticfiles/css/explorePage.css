@@ -1,0 +1,214 @@
+* {box-sizing: border-box;}
+
+body { 
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.inputform {
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.btn {
+ background-color: #e6e6e6;
+   font: 15px Verdana;
+  font-weight: 600;
+  
+}
+
+label{
+  font: 15px Verdana;
+  font-weight: 600;
+}
+
+input, select{
+ 
+  padding: 10px 20px;
+  margin: 10px 0;
+  display: inline;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  box-sizing: border;
+}
+
+.date{
+    display: inline;
+}
+
+button {
+  background-color: #e6e6e6;
+  color: black;
+  padding: 20px 100px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  float: left;
+}
+
+.header {
+    width: 100%;
+    clear: both;
+    display: inline-block;
+  background-color: #4c4b4b ;
+  padding: 2px 10px;
+  border-color: black;
+  border-bottom: 2px solid #C0C0C0;
+
+}
+
+.footer {
+  width: 100%;
+  display: inline-block;
+  background-color: #4c4b4b;
+  padding: 100px 10px;
+}
+
+.logo-div {
+ float: left;
+ position:fixed;
+ font-weight: italic;
+ background-color: black;
+ padding: 20px;
+}
+
+
+.explore {
+  padding: 60px 20px;
+  border-color: black;
+  border-bottom: 2px solid #C0C0C0;
+  /*background-color: #f7f1f0;*/
+  padding-left: 300px;
+  padding-right: 250px;
+  min-height: 650px;
+  z-index: 2;
+}
+
+.exploreFlights {
+  padding: 60px 20px;
+  border-color: black;
+  border-bottom: 2px solid #C0C0C0;
+  /*background-color: #f7f1f0;*/
+  padding-left: 300px;
+  padding-right: 250px;
+  min-height: 650px;
+  z-index: 2;
+}
+
+.header a {
+  color: white;
+  text-align: center;
+  padding: 20px;
+  text-decoration: none;
+  font-size: 18px; 
+  line-height: 35px;
+  border-radius: 5px;
+  font: 15px Verdana;
+  font-weight: 600;
+  position: relative;
+   
+}
+
+.footer a {
+  
+  color: white;
+  text-align: center;
+  padding: 20px;
+  text-decoration: none;
+  font-size: 18px; 
+  line-height: 35px;
+  border-radius: 5px;
+  font: 15px Verdana;
+  font-weight: 600;
+  position: relative;
+}
+
+.header a.logo {
+  float: left;
+  font-weight: italic;
+  color: white;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+   line-height: 25px;
+  border-radius: 4px;
+  padding: 10px
+  
+}
+
+
+
+.header a:hover {
+  background-color: black;
+  color: white;
+}
+
+.header a:active {
+  background-color: #cc0000;
+  color: white;
+}
+
+.header-right a {
+  float: right;
+}
+
+.header-left a {
+  float: left;
+}
+
+.header-left{
+  padding-left: 170px;
+}
+
+.footer-right {
+  float: left;
+}
+
+@media screen and (max-width: 500px) {
+  .header a {
+    float: none;
+    display: block;
+    text-align: left;
+  }
+  
+  .header-right {
+    float: none;
+  }
+}
+
+.btn1  {
+    top: 50%;
+    left: 50%;
+    background-color: black;
+    color: white;
+    font-size: 16px;
+    
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    float: right;
+    z-index: 9999;
+    }
+
+.dropdown-menu {
+background-color: #4c4b4b;
+position: relative; 
+}
+
+.dropdown-item {
+    font-size: 10px;
+    color: black;
+
+}
+
+.departureFlights {
+  min-height: 650px;
+  z-index: 2;
+}
+
+
+#dropdown-menu {
+  background-color:  #4c4b4b; 
+  position: relative; 
+  }
+
+

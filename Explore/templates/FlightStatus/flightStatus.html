@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+   
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'misc2.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/explorePage.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <style>
+      .grid-container-footer {
+        display: grid;
+        grid-template-columns: auto auto auto auto;
+        gap: 5px;
+        padding: 20px;
+        padding-left:80px;
+       
+      }
+      .grid-container-footer > div {
+
+        color: white;
+        padding: 10px;
+        font-size: 15px;
+        text-align: left;
+      }
+      li {
+         list-style-type: none;
+        }
+      </style>
+
+</head>
+<body>
+
+  <div class="header">
+
+    <div class="logo-div">
+    <a href="#default" class="logo">Air Arctic</a>
+    </div>
+    <div class="header-left">
+      <a class="active" href="/api/exploreTrip/">Search Flights</a>
+      <a href="/api/manageBooking/">Manage Booking</a>
+      <a href="/api/flightStatus/">Flight Status</a>
+    </div>
+    <div class="header-right">
+      {% if request.user.is_authenticated %}
+      <div class="dropdown">
+        <button class="btn1 btn1-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{request.user}}
+        </button>
+        <div class="dropdown-menu" id="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" href="#">Air Arctic Rewards</a>
+          <a class="dropdown-item" href="#">Profile</a>
+          <a class="dropdown-item" href="/api/logout/">Logout</a>
+        </div>
+      </div>
+      {% else %}
+      <a href ="/api/loginPage/">Login</a>
+      <a href="/api/register/">Join Now</a>
+      {% endif %}
+      
+
+    </div>
+  </div>
+
+<div class="explore">
+
+    <h2>Flight Status</h2>
+ 
+
+
+<form method = "post" action="{% url 'submitflightStatusByFnForm' %}">
+  {% csrf_token %}
+<label for="fsByFn">Search by Flight Number:</label><br>
+<input type="text" id="flightNumber" name="flightNumber" value="{{flightNumber}}" required><br><br>
+
+<button type="submit" value="Get Real Time flight status" > Get Real Time flight status</button>
+
+</form>
+<br>
+<br>
+<br>
+<form method = "post" action="{% url 'submitflightStatusByRouteForm' %}">
+  {% csrf_token %}
+  <label for="fsByRoute">Search by Route:</label><br>
+  Departure Airport<br>
+  <input type="text" id="departureAirport" name="departureAirport" value="{{departureAirport}}" required><br><br>
+  Destination Airport<br>
+  <input type="text" id="destinationAirport" name="destinationAirport" value="{{destinationAirport}}" required><br><br>
+  Departure Airport<br>
+  <input type="date" id="departureDate" name="departureDate" value="{{departureDate}}" required><br><br>
+  
+  <button type="submit" value="Get Real Time flight status" > Get Real Time flight status</button>
+  
+  </form>
+
+</div>
+
+
+
+<div class = "pre-footer" style="background-color: black; color: white;  padding: 10px; padding-left:80px; font-size:20px; "> <h5>Air Arctic > Flight Status</h5></div> 
+<div class="footer">
+  <div class="grid-container-footer">
+    <div> <h6>About</h6>
+          <li>About Us</li>
+          <li>Careers</li>
+    </div>
+    <div> <h6>Manage</h6>
+      <li>Check In</li>
+      <li>Manage Your Flight</li>
+      <li>Flight Status</li>
+    </div>
+    <div> <h6>Book</h6>
+      <li>Book Your Flight</li>
+      <li>Search For Flight</li>
+      <li>Planning Your Trip</li>
+    </div> 
+    <div> <h6>Loyalty</h6>
+      <li>Login Into Air Arctic Rewards</li>
+      <li>Join Air Arctic Rewards</li>
+    </div>
+    <div> <h6>Subscribe To Our Special Offers</h6><br>
+      <form method = "post">
+        {% csrf_token %}
+        <input type="text" id="subscribeEmail" name="subscribeEmail" value="{{subscribeEmail}}" placeholder="Email Address" >
+        <input type="submit" value="Subscribe" ></input>
+        </form>
+    </div>
+    <div> <h6>Before You Fly</h6>
+      <li>Baggage</li>
+      <li>Visa & Passport Info</li>
+      <li>Seats</li>
+    </div>  
+    <div> <h6>Help</h6>
+      <li>Help Centre</li>
+      <li>Contact an Agent</li>
+    </div>
+    <div><h6>Feedback</h6>
+      <form method = "post">
+        {% csrf_token %}
+        <input type="submit" value="Site Feedback" ></input>
+        </form>
+    </div>
+  </div>
+  </div>
+</div>
+
+</body>
+</html>

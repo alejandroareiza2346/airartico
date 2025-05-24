@@ -1,0 +1,622 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+   
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'misc2.js' %}"></script>
+    <script type="text/javascript" src="{% static 'checkoutForm.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/explorePage.css' %}">
+    <link rel="stylesheet" href="{% static 'reviewDetails_card/checkoutForm.css' %}">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <style>
+.tripTable {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.tripTableH, .tripTableD {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #DDD;
+}
+
+.tripTableR:hover {background-color: #D6EEEE;}
+
+.collapsible {
+  background-color: #777;
+  color: white;
+  cursor: pointer;
+  padding: 18px;
+  padding-bottom: 10px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+  margin-bottom: 20px;
+}
+
+
+.active, .collapsible:hover {
+  background-color: #555;
+}
+
+.content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
+}
+.regionImg {
+  height: 50px;
+  width: 50px;
+}
+.pointsConversion{
+  display: flex;
+}
+
+.grid-container-footer {
+        display: grid;
+        grid-template-columns: auto auto auto auto;
+        gap: 5px;
+        padding: 20px;
+        padding-left:80px;
+       
+      }
+      .grid-container-footer > div {
+
+        color: white;
+        padding: 10px;
+        font-size: 15px;
+        text-align: left;
+      }
+      li {
+         list-style-type: none;
+        }
+
+
+
+
+  </style>
+    
+</head>
+<body>
+
+  <div class="header">
+
+    <div class="logo-div">
+    <a href="#default" class="logo">Air Arctic</a>
+    </div>
+    <div class="header-left">
+      <a class="active" href="/api/exploreTrip/">Search Flights</a>
+      <a href="/api/manageBooking/">Manage Booking</a>
+     <a href="/api/flightStatus/">Flight Status</a>
+    </div>
+    <div class="header-right">
+      {% if request.user.is_authenticated %}
+      <div class="dropdown">
+        <button class="btn1 btn1-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{request.user}}
+        </button>
+        <div class="dropdown-menu" id="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" href="#">Air Arctic Rewards</a>
+          <a class="dropdown-item" href="#">Profile</a>
+          <a class="dropdown-item" href="/api/logout/">Logout</a>
+        </div>
+      </div>
+      {% else %}
+      <a href ="/api/loginPage/">Login</a>
+      <a href="/api/register/">Join Now</a>
+      <a class="region">Region</div>
+      {% endif %}
+      
+
+    </div>
+  </div>
+ <br>
+ <br>
+
+<h2>Review Details</h2>
+
+
+<div class="tripAndPassangerDiv">
+
+<button type="button" class="collapsible">Passanger Info</button>
+
+<div class="content" id="passangerDiv">
+  
+  <p id="memberInfo"></p>
+  
+  </div><br>
+
+<button type="button" class="collapsible">Trip Info</button>
+<div class = "content" id="tripDiv">
+
+  <h4>Trip Info</h4>
+  
+  <h5>Departing Flight</h5> 
+  <table class="tripTable">
+      <tr class="tripTableR">
+        <th class="tripTableH">Flight No</th>
+        <th class="tripTableH">Departure Airport</th>
+        <th class="tripTableH">Destination Airport</th>
+        <th class="tripTableH">Departure Date</th>
+        <th class="tripTableH">Arrival Date</th>
+      </tr>
+      <tr class="tripTableR">
+        <td class="tripTableD" id="d1"></td>
+        <td class="tripTableD" id="d2"></td>
+        <td class="tripTableD" id="d3"></td>
+        <td class="tripTableD" id="d4"></td>
+        <td class="tripTableD"id="d5"></td>
+      </tr>
+    </table>
+    
+      <h5>Returning Flight</h5>
+  <table class="tripTable">
+      <tr class="tripTableR">
+        <th class="tripTableH">Flight No</th>
+        <th class="tripTableH">Departure Airport</th>
+        <th class="tripTableH">Destination Airport</th>
+        <th class="tripTableH">Departure Date</th>
+        <th class="tripTableH">Arrival Date</th>
+      </tr>
+      <tr class="tripTableR">
+        <td class="tripTableD" id="r1"></td>
+        <td class="tripTableD" id="r2"></td>
+        <td class="tripTableD" id="r3"></td>
+        <td class="tripTableD" id="r4"></td>
+        <td class="tripTableD"id="r5"></td>
+      </tr>
+    </table>
+  </div><br>
+
+<div class="inline">
+
+
+
+<!--
+
+<form>
+  <input type="checkbox" id="card" value="Pay with card">
+  <label for="donotpaywithrewards"> Pay with Card</label><br>
+  <h5>OR</h5>
+  <a href ="/api/loginPage/">Login to Pay with Air Arctic Rewards</a>
+</form>
+
+-->
+</div> 
+
+
+
+<button type="button" class="collapsible">Rewards Summary</button>
+
+
+{% if request.user.is_authenticated %}
+
+  <div class="content1" id="rewardsSummaryDiv">
+
+  <div>
+    Air Arctic Rewards Level: <h5 id="userRewardsL"></h5>
+    Air Arctic Rewards Points: <h5 id="userRewardsP"></h5>
+  </div>
+
+  
+ 
+  <div id="usePointsDiv"></div>
+  <form>
+    <input type="checkbox" id="yes" value="Pay with Air Arctic Rewards" onclick="checkIsChecked()">
+    <label for="paywithrewards">Pay with Air Arctic Rewards</label><br>
+  </form>
+  </div>
+
+  <div id="rewardsDivv" class = "rewardsDivv">
+    <form>
+      
+              <input type="number" id="pr" name="pr" value="{{pr}}" default="0" placeholder="Points to be redeemed" oninput="pointsToDollarConversion(), validateMaxPoints()"><br>
+    
+              <input type="number" id="rv" name="rv" value="{{rv}}" placeholder=Redeemable Value default="0" disabled>
+              <span id="errorName"></span></br><br>
+    
+              <input type = "button" id="confirm-btn" value="Confirm Points to be redemeed" onClick="disableOnClick()"></button>
+              <input type = "button" id="edit-btn" value="Edit Points to be redemeed" onClick="editRedeemablePoints()" hidden></button>
+    
+    </form>
+    </div>
+
+    {% else %}
+
+    <div class = "loginToDisplayRewards">
+
+      <a href ="/api/loginPage/" type="submit">LogIn To Display Rewards</a><br>
+
+    </div>
+
+    {% endif %}
+
+    </div>
+
+
+
+
+    </body>
+
+
+</div><br>
+
+<script>
+
+
+
+  userRewardPoints = 20000;
+  bookingTotal= 130;
+
+  document.getElementById("userRewardsP").innerHTML = userRewardPoints;
+  document.getElementById("userRewardsL").innerHTML = "Silver"; 
+
+  $(".rewardsDivv").hide()
+
+  function pointsToDollarConversion() { 
+      var pointsR =  document.getElementById("pr").value;
+
+      var rValue = pointsR * 0.1;
+
+      document.getElementById("rv").value = rValue;
+
+  } 
+  function validateMaxPoints(){
+
+    var pointsRe =  document.getElementById("pr").value;
+    var reValue = document.getElementById("rv").value
+    if (pointsRe >= userRewardPoints){
+        document.getElementById("errorName").innerHTML = "Your donot have enough points";
+        document.getElementById("confirm-btn").disabled=true;
+    
+      }
+    else if((pointsRe <= userRewardPoints) && (reValue >= bookingTotal)){
+      document.getElementById("errorName").innerHTML = "Points Redemable value greater than Booking total";
+      document.getElementById("confirm-btn").disabled=true;
+    }
+    else {
+      document.getElementById("errorName").innerHTML = "";
+      document.getElementById("confirm-btn").disabled=false;
+    }
+
+}
+
+function disableOnClick(){
+
+  document.getElementById("pr").disabled=true;
+  document.getElementById("confirm-btn").hidden=true;
+  document.getElementById("edit-btn").hidden=false;
+
+  var dollarRedeemableValue =  document.getElementById("rv").value
+  document.getElementById("redeemableValue").innerHTML = dollarRedeemableValue
+
+  var amountLeft = tripTotal - dollarRedeemableValue
+  document.getElementById("amountLeft").innerHTML = amountLeft
+
+
+
+  alert("Points to be Redeemed:" +dollarRedeemableValue)
+
+}
+
+function editRedeemablePoints(){
+  document.getElementById("pr").disabled=false;
+  document.getElementById("confirm-btn").hidden=false;
+  document.getElementById("edit-btn").hidden=true;
+
+}
+
+
+
+function checkIsChecked(){
+
+
+  
+
+  $('#yes').change(function(){
+
+    if($(this).is(":checked"))
+    $('#rewardsDivv').fadeIn('fast');
+    
+
+      
+   
+    else
+    $('#rewardsDivv').fadeOut('fast');
+    document.getElementById("redeemableValue").innerHTML = 0
+    document.getElementById("amountLeft").innerHTML = tripTotal
+    
+
+    });
+}
+
+
+</script>
+
+<!--Payment div starts-->
+
+
+<!--
+<div>
+      <form  method = "post" action="{% url 'submitreviewform' %}" style="padding-left: 20px;">
+        {% csrf_token %}
+
+          <div class="input-form">
+            <h3>Payment</h3>
+            <label for="cname">Name on Card</label>
+            <input type="text" id="cname" name="cname" value="{{cname}}" placeholder="John More Doe"><br><br>
+          
+            <label for="ccnum">Credit card number</label>
+            <input type="text" id="ccnum" name="ccnum" value="{{ccnum}}" placeholder="1111-2222-3333-4444"><br><br>
+
+            <label for="expmonth">Exp Month</label>
+            <input type="text" id="expmonth" name="expmonth" value="{{expmonth}}" placeholder="September">
+
+            <label for="expyear">Exp Year</label>
+            <input type="text" id="expyear" name="expyear" value="{{expyear}}" placeholder="2018">
+
+            <label for="cvv">CVV</label>
+          <input type="text" id="cvv" name="cvv" value="{{cvv}}" placeholder="352">
+
+          </div><br><br>
+        <label>
+          <input type="checkbox" checked="checked" name="sameadr"> Shipping address same as billing
+        </label><br>
+        <input type="submit" value="Complete Booking" class="btn"><br>
+      </form>
+      </div>
+      
+  </div><br>
+  </body>
+
+</div>-->
+<!--Payment div emds--><br>
+
+<div class='container'>
+  <div class='window'>
+    <div class='order-info'>
+      <div class='order-info-content'><br>
+        <h2>Payment Summary</h2>
+        <div class='line'></div>
+        <table class='order-table'>
+          <tbody>
+              <td>
+                <br> <span class='thin'>Air & Transportation charges: </span>
+              </td>
+            <tr><br>
+              <td>
+                <div class="price" id="totalBeforeTax"></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="line"></div>
+        <table class='order-table'>
+          <tbody>
+              <td>
+                <br> <span class='thin'>Taxes and Other fees:</span>
+              </td>
+            <tr>
+              <td>
+                <div class='price' id="tax"></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="line"></div>
+         <table class='order-table'>
+          <tbody>
+              <td>
+                <br> <span class='thin'>Trip Total:</span>
+              </td>
+            <tr>
+              <td>
+                <div class='price' id="tripTotal"></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="line"></div>
+        <table class='order-table'>
+         <tbody>
+             <td>
+               <br> <span class='thin'>Amount Paid with Points:</span>
+             </td>
+           <tr>
+             <td>
+               <div class='price' id="redeemableValue"></div>
+             </td>
+           </tr>
+         </tbody>
+       </table>
+       <div class="line"></div>
+       <table class='order-table'>
+        <tbody>
+            <td>
+              <br> <span class='thin'>Amount to be paid:</span>
+            </td>
+          <tr>
+            <td>
+              <div class='price' id="amountLeft"></div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    
+</div>
+
+</div>
+        <div class='credit-info'>
+          <div class='credit-info-content'>
+            
+            <form  method = "post" action="{% url 'submitreviewform' %}" style="padding-left: 20px;">
+              {% csrf_token %}
+
+            <img src='https://dl.dropboxusercontent.com/s/ubamyu6mzov5c80/visa_logo%20%281%29.png' height='80' class='credit-card-image' id='credit-card-image'></img>
+            Card Number
+            <input type="text" id="ccnum" name="ccnum" value="{{ccnum}}" placeholder="1111-2222-3333-4444">
+            Card Holder
+            <input type="text" id="cname" name="cname" value="{{cname}}" placeholder="John More Doe"><br><br>
+            <table class='half-input-table'>
+              <tr>
+                <td > Expiry Month
+                  <input type="text"  id="expmonth" name="expmonth" value="{{expmonth}}" placeholder="September">
+                </td>
+                <td > Expiry year
+                  <input type="text"  id="expyear" name="expyear" value="{{expyear}}" placeholder="2018">
+                </td>
+  
+              </tr>
+              <tr>
+                <td>CVC
+                  <input type="text" id="cvv" name="cvv" value="{{cvv}}" placeholder="352">
+                </td>
+              </tr>
+            </table>
+            <input type="submit" value="Complete Booking" class="pay-btn"><br>
+            </form>
+
+          </div>
+
+        </div>
+      </div>
+</div>
+
+
+<script>
+
+var jsUrl = new URL(window.location.href);
+
+passanger = jsUrl.searchParams.get("passanger");
+trip = jsUrl.searchParams.get("trip");
+
+console.log(passanger)
+console.log(typeof(passanger))
+console.log(typeof(trip))
+
+
+
+    parsedTrip=JSON.parse(trip)
+
+    d_f = parsedTrip['departingFlight']['flightNumber']
+    d_depart_airport = parsedTrip['departingFlight']['departureAirport']['iataCode']
+    d_dest_Airport = parsedTrip['departingFlight']['destinationAirport']['iataCode']
+    d_depart_date = parsedTrip['departingFlight']['departureDate']
+    d_arrival_date = parsedTrip['departingFlight']['arrivalDate']
+    d_price = parsedTrip['departingFlight']['price']
+
+   
+    r_f = parsedTrip['returningFlight']['flightNumber']
+    r_depart_airport = parsedTrip['returningFlight']['departureAirport']['iataCode']
+    r_dest_Airport = parsedTrip['returningFlight']['destinationAirport']['iataCode']
+    r_depart_date = parsedTrip['returningFlight']['departureDate']
+    r_arrival_date = parsedTrip['returningFlight']['arrivalDate']
+    r_price = parsedTrip['returningFlight']['price']
+  
+    document.getElementById('d1').innerHTML = d_f;
+    document.getElementById('d2').innerHTML = d_depart_airport;
+    document.getElementById('d3').innerHTML = d_dest_Airport;
+    document.getElementById('d4').innerHTML = d_depart_date;
+    document.getElementById('d5').innerHTML = d_arrival_date;
+    //document.getElementById('d6').innerHTML = d_price;
+
+
+    document.getElementById('r1').innerHTML = r_f;
+    document.getElementById('r2').innerHTML = r_depart_airport;
+    document.getElementById('r3').innerHTML = r_dest_Airport;
+    document.getElementById('r4').innerHTML = r_depart_date;
+    document.getElementById('r5').innerHTML = r_arrival_date;
+    //document.getElementById('r6').innerHTML = r_price;
+
+    
+
+    document.getElementById("memberInfo").innerHTML = passanger
+    //document.getElementById("tripInfo").innerHTML = trip
+
+    tripTotal = parseFloat(d_price) + parseFloat(r_price)
+    document.getElementById("tripTotal").innerHTML  =  tripTotal
+    document.getElementById("tax").innerHTML  =  (11/100)*(parseFloat(tripTotal))
+    document.getElementById("totalBeforeTax").innerHTML  =  (parseFloat(tripTotal)) - ((11/100)*(parseFloat(d_price) + parseFloat(r_price)))
+
+
+
+</script>
+
+<script>
+  var coll = document.getElementsByClassName("collapsible");
+  var i;
+  
+  for (i = 0; i < coll.length; i++) {
+    coll[i].addEventListener("click", function() {
+      this.classList.toggle("active");
+      var content = this.nextElementSibling;
+      if (content.style.display === "block") {
+        content.style.display = "none";
+      } else {
+        content.style.display = "block";
+      }
+    });
+  }
+  </script>
+
+
+<div class = "pre-footer" style="background-color: black; color: white;  padding: 10px; padding-left:80px; font-size:20px; "> <h5>Air Arctic > Review Details</h5></div> 
+<div class="footer">
+  <div class="grid-container-footer">
+    <div> <h6>About</h6>
+          <li>About Us</li>
+          <li>Careers</li>
+    </div>
+    <div> <h6>Manage</h6>
+      <li>Check In</li>
+      <li>Manage Your Flight</li>
+      <li>Flight Status</li>
+    </div>
+    <div> <h6>Book</h6>
+      <li>Book Your Flight</li>
+      <li>Search For Flight</li>
+      <li>Planning Your Trip</li>
+    </div> 
+    <div> <h6>Loyalty</h6>
+      <li>Login Into Air Arctic Rewards</li>
+      <li>Join Air Arctic Rewards</li>
+    </div>
+    <div> <h6>Subscribe To Our Special Offers</h6><br>
+      <form method = "post">
+        {% csrf_token %}
+        <input type="text" id="subscribeEmail" name="subscribeEmail" value="{{subscribeEmail}}" placeholder="Email Address" >
+        <input type="submit" value="Subscribe" ></input>
+        </form>
+    </div>
+    <div> <h6>Before You Fly</h6>
+      <li>Baggage</li>
+      <li>Visa & Passport Info</li>
+      <li>Seats</li>
+    </div>  
+    <div> <h6>Help</h6>
+      <li>Help Centre</li>
+      <li>Contact an Agent</li>
+    </div>
+    <div><h6>Feedback</h6>
+      <form method = "post">
+        {% csrf_token %}
+        <input type="submit" value="Site Feedback" ></input>
+        </form>
+    </div>
+  </div>
+  </div>
+</div>
+
+</body>
+</html>

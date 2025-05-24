@@ -1,0 +1,439 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+   
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'misc2.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/explorePage.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+<style>
+      .grid-container-footer {
+        display: grid;
+        grid-template-columns: auto auto auto auto;
+        gap: 5px;
+        padding: 20px;
+        padding-left:80px;
+       
+      }
+      .grid-container-footer > div {
+
+        color: white;
+        padding: 10px;
+        font-size: 15px;
+        text-align: left;
+      }
+      li {
+         list-style-type: none;
+        }
+
+        * {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* Slider */
+
+.slider-wrapper {
+  overflow: hidden;
+}
+
+.slider {
+  position: relative;
+  display: flex;
+  transition: 0.5s;
+}
+
+.item {
+  flex: 1 0 33.33%;
+  min-height: 300px;
+}
+
+.exploreFlights{
+
+  padding: 20px 10px;
+  border-color: black;
+  border-bottom: 2px solid #C0C0C0;
+  /*background-color: #f7f1f0;*/
+  padding-left: 100px;
+  padding-right: 100px;
+  z-index: 2;
+
+}
+.network{
+
+padding: 20px 10px;
+border-color: black;
+
+/*background-color: #f7f1f0;*/
+padding-left: 100px;
+padding-right: 100px;
+z-index: 2;
+
+}
+.network-desc{
+
+padding-top: 200px;
+border-color: black;
+
+/*background-color: #f7f1f0;*/
+padding-left: 200px;
+padding-right: 50px;
+min-height: 400px
+
+}
+
+.button-explore {
+  align-items: center;
+  background-color: #fff;
+  border-radius: 24px;
+  box-shadow: rgba(0, 0, 0, .2) 0 3px 5px -1px,rgba(0, 0, 0, .14) 0 6px 10px 0,rgba(0, 0, 0, .12) 0 1px 18px 0;
+  box-sizing: border-box;
+  color: #3c4043;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: "Google Sans",Roboto,Arial,sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  height: 48px;
+  justify-content: center;
+  letter-spacing: .25px;
+  max-width: 100%;
+  overflow: visible;
+  padding: 2px 24px;
+  text-align: center;
+  transition: box-shadow 280ms cubic-bezier(.4, 0, .2, 1),opacity 15ms linear 30ms,transform 270ms cubic-bezier(0, 0, .2, 1) 0ms;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: auto;
+  will-change: transform,opacity;
+  z-index: 0;
+}
+</style>
+</head>
+<body>
+
+  <div class="header">
+
+    <div class="logo-div">
+    <a href="#default" class="logo">Air Arctic</a>
+    </div>
+    <div class="header-left">
+      <a class="active" href="/api/exploreTrip/">Search Flights</a>
+      <a href="/api/manageBooking/">Manage Booking</a>
+      <a href="/api/flightStatus/">Flight Status</a>
+    </div>
+    <div class="header-right">
+      {% if request.user.is_authenticated %}
+      <div class="dropdown">
+        <button class="btn1 btn1-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{request.user}}
+        </button>
+        <div class="dropdown-menu" id="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" href="#">Air Arctic Rewards</a>
+          <a class="dropdown-item" href="#">Profile</a>
+          <a class="dropdown-item" href="/api/logout/">Logout</a>
+        </div>
+      </div>
+      {% else %}
+      <a href ="/api/loginPage/">Login</a>
+      <a href="/api/register/">Join Now</a>
+      {% endif %}
+      
+
+    </div>
+  </div>
+
+  <!--
+  <video autoplay loop muted="background" style="position: fixed;">
+  <source src="{% static "images/air-wallpaper.mp4" %}" type="video/mp4"></source>
+</video>
+-->
+<div class = "explore" >
+
+  
+<form class="container" method = "post" action="{% url 'submitexploreform' %}">
+   <h1>Explore flights</h1>
+  <h3>Search for Air Arctic flights and book online</h3>
+  {% csrf_token %}
+  <div class="inputform">
+  <label for="trip">Trip</label><br>
+  <select name="trip" id="trip" name="{{trip}}" onchange="handleChange(event)">
+    <option id="oneway" value="ONEWAY">ONEWAY</option>
+    <option id="roundtrip" value="ROUNDTRIP">ROUNDTRIP</option>
+  </select><br>
+
+  <label for="from">Travelling from</label><br>
+  <input type="text" id="from" name="from" placeholder="Travelling From" value="{{from}}" required>
+
+  <label for="to">Travelling To</label>
+  <input type="text" id="to" name="to" placeholder="Travelling To" value="{{to}}" required><br>
+
+
+  <div class= "date">
+  <div class="startdate1" name="startdate1" id="startdate1">
+    <label for="startdate">Start Date</label><br>
+    <input type="date" id="startdate" name="startdate" value="{{startdate}}" required>
+  </div>
+
+  <div class="enddate1" name="enddate1" id="enddate1">
+   <label for="enddate">Return date</label><br>
+   <input type="date" id="enddate" name="enddate" value="{{enddate}}" ><br><br>
+  </div>
+  </div>
+
+  <label for="passanger">Passangers Travelling:</label><br>
+  <input type="number" id="passanger" name="passanger" value="{{passanger}}" required><br><br><br>
+  </div>
+  
+  <div class = "btn">
+  <button type="submit" value="Search Flights" > Search Flights</button>
+  </div>
+  </form>
+<br>
+
+
+
+
+</div>
+
+<div class="network">
+
+  <div style="width: 100%; overflow: hidden;">
+    <div style="width: 1000px; float: left;"> <img src="{% static "images/explore-destinations/flight-network.webp" %}" width="1000" height="655" class="airplaneImg" /></div>
+    <div class="network-desc" style="margin-left: 400px;"> <h4>Thinking of a destination<br>We'll get you there.<br><br>Our network covers more than 20 countries</h4></div>
+</div>
+
+</div>
+
+
+
+<div class="network">
+
+  <div class="exploreFlightHeader"><h4>Canada never gets out of season</h4></div><br>
+
+  <div class="slider-wrapper" data-items="4">
+    <div class="slider">
+      <div class="item" style="border-radius: 25px;" ><img src="{% static "images/explore-destinations/Winnipeg.jpg" %}" width="400" height="280"  /><button class="button-explore" role="button" onclick="showWinnipegFlights()" >Flights to Winnipeg</button></div>
+      <div class="item"  ><img src="{% static "images/explore-destinations/Toronto.jpg" %}" width="400" height="280"/><button class="button-explore" role="button" onclick="showWinnipegFlights()">Flights to Toronto</button></div>
+      <div class="item" ><img src="{% static "images/explore-destinations/Saskatoon.avif" %}" width="400" height="280" /><button class="button-explore" role="button" onclick="showWinnipegFlights()">Flights to Saskatoon</button></div>
+      <div class="item" ><img src="{% static "images/explore-destinations/montreal1.jpg" %}" width="400" height="280"  /><button class="button-explore" role="button" onclick="showWinnipegFlights()">Flights to Montreal</button></div>
+      <div class="item" ><img src="{% static "images/explore-destinations/vanc.jpg" %}" width="400" height="280"  /><button class="button-explore" role="button" onclick="showWinnipegFlights()">Flights to Vancouver</button></div>
+      <div class="item" ><img src="{% static "images/explore-destinations/yn.jpg" %}" width="400" height="280"  /><button class="button-explore" role="button" onclick="showWinnipegFlights()">Flights to Yellow Knife</button></div>
+      <!-- Never use inline style. This is just for demo. -->
+    </div><br>
+    <button class="prev" style="" type="button">&larr;</button>
+    <button class="next" type="button">&rarr;</button>
+  </div>
+  <br>
+
+</div>
+
+<div class="exploreFlights">
+
+  <div class="exploreFlightHeader"><h4>Our popular Actic Destinations</h4></div><br>
+
+  <div class="slider-wrapper" data-items="4">
+    <div class="slider">
+      <div class="item" style="border-radius: 25px;" ><img src="{% static "images/explore-destinations/sweden.webp" %}" width="400" height="280"  /><button class="button-explore" role="button" onclick="showWinnipegFlights()">Flights to Sweden</button></div>
+      <div class="item"  ><img src="{% static "images/explore-destinations/finland.webp" %}" width="400" height="280"/><button class="button-explore" role="button" onclick="showWinnipegFlights()">Flights to Finland</button></div>
+      <div class="item" ><img src="{% static "images/explore-destinations/Norway.webp" %}" width="400" height="280" /><button class="button-explore" role="button" onclick="showWinnipegFlights()">Flights to Norway</button></div>
+      <div class="item" ><img src="{% static "images/explore-destinations/Nuuk.webp" %}" width="400" height="280"  /><button class="button-explore" role="button" onclick="showWinnipegFlights()">Flights to Greenland</button></div>
+      <div class="item" ><img src="{% static "images/explore-destinations/iceland.webp" %}" width="400" height="280"  /><button class="button-explore" role="button" onclick="showWinnipegFlights()">Flights to Iceland</button></div>
+      <div class="item" ><img src="{% static "images/explore-destinations/yn.jpg" %}" width="400" height="280"  /><button class="button-explore" role="button" onclick="showWinnipegFlights()">Flights to Yellow Knife</button></div>
+      <!-- Never use inline style. This is just for demo. -->
+    </div><br>
+    <button class="prev" style="" type="button">&larr;</button>
+    <button class="next" type="button">&rarr;</button>
+  </div>
+  <br>
+
+</div>
+
+<div class="manageDiv">
+
+  <div style="width: 100%; overflow: hidden;">
+    <div style="width: 700px; float: left;" class="network"> <h4>Manage Your Booking at one place</h4>
+    
+      {% if request.user.is_authenticated %}
+
+      <form>
+      <button type="submit" class="button-explore" value="Display Bookings" ><a href ="/api/redirectToAllBookings/" type="submit">View All Bookings</a><br></button>
+      </form>
+      
+      {% else %}
+      <form method = "post" action="{% url 'submitManageBookingForm' %}">
+      <input type="text" id="bookingReferenceNumber" name="bookingReferenceNumber" placeholder="Booking Reference Number" value="{{bookingReferenceNumber}}" required><br>
+      
+      <button type="submit" class="button-explore" value="Go" > Search Booking</button>
+      
+      </form>
+      
+      {% endif %}
+    
+    
+    
+    </div>
+
+
+
+      <div style="width: 700px; float: right;" class="network"> <h4>Track your Flight</h4>
+
+      <form method = "post" action="{% url 'submitflightStatusByFnForm' %}">
+        {% csrf_token %}
+      <input type="text" id="flightNumber" name="flightNumber" placeholder="Flight Number" value="{{flightNumber}}" required><br>
+      
+      <button type="submit" class="button-explore" value="Get Real Time flight status" > Get Real Time flight status</button>
+      
+      </form>
+ 
+    </div>
+</div>
+
+</div>
+
+
+
+
+<div class = "pre-footer" style="background-color: black; color: white;  padding: 10px; padding-left:80px; font-size:20px; "> <h5>Air Arctic > Explore Flights</h5></div> 
+<div class="footer">
+  <div class="grid-container-footer">
+    <div> <h6>About</h6>
+          <li>About Us</li>
+          <li>Careers</li>
+    </div>
+    <div> <h6>Manage</h6>
+      <li>Check In</li>
+      <li>Manage Your Flight</li>
+      <li>Flight Status</li>
+    </div>
+    <div> <h6>Book</h6>
+      <li>Book Your Flight</li>
+      <li>Search For Flight</li>
+      <li>Planning Your Trip</li>
+    </div> 
+    <div> <h6>Loyalty</h6>
+      <li>Login Into Air Arctic Rewards</li>
+      <li>Join Air Arctic Rewards</li>
+    </div>
+    <div> <h6>Subscribe To Our Special Offers</h6><br>
+      <form method = "post">
+        {% csrf_token %}
+        <input type="text" id="subscribeEmail" name="subscribeEmail" value="{{subscribeEmail}}" placeholder="Email Address" >
+        <input type="submit" value="Subscribe" ></input>
+        </form>
+    </div>
+    <div> <h6>Before You Fly</h6>
+      <li>Baggage</li>
+      <li>Visa & Passport Info</li>
+      <li>Seats</li>
+    </div>  
+    <div> <h6>Help</h6>
+      <li>Help Centre</li>
+      <li>Contact an Agent</li>
+    </div>
+    <div><h6>Feedback</h6>
+      <form method = "post">
+        {% csrf_token %}
+        <input type="submit" value="Site Feedback" ></input>
+        </form>
+    </div>
+  </div>
+  </div>
+</div>
+
+<script>
+
+
+  $(".startdate1, .enddate1").hide()
+  
+  var triP =  document.getElementById("trip");
+  var tripD = trip.options[trip.selectedIndex].value;
+  
+  function handleChange(e) {
+    let innerText = e.target[e.target.options.selectedIndex].innerText;
+    tripD = e.target.value;
+  
+   console.log(tripD)
+  
+   $('#enddate1').hide()
+  
+   if (tripD == "ONEWAY") {
+  
+  $('#startdate1').show();
+  }
+  
+  else if (tripD == "ROUNDTRIP") {
+  
+  $('#enddate1').show();
+  $('#startdate1').show();
+  }
+  
+  }
+  
+  
+   console.log(tripD)
+  
+  
+  if (tripD == "ONEWAY") {
+  
+    $('#startdate1').show();
+  }
+  
+  else if (tripD == "ROUNDTRIP") {
+  
+   $('#enddate1').show();
+   $('#startdate1').show();
+  }
+  </script>
+
+  <script>
+ 
+ const els = (sel, par = document) => par.querySelectorAll(sel);
+ const el = (sel, par = document) => par.querySelector(sel);
+ const mod = (n, m) => (n % m + m) % m;
+
+els(".slider-wrapper").forEach(elPar => {
+  const elSlider = el(".slider", elPar);
+  const elsItems = els(".item", elPar);
+  const sub = +elPar.dataset.items ?? 1;
+  const tot = Math.ceil(elsItems.length / sub);
+  let c = 0;
+  
+  const anim = () => elSlider.style.transform = `translateX(-${c*100}%)`;
+  const prev = () => (c = mod(c-1, tot), anim());
+  const next = () => (c = mod(c+1, tot), anim());
+  
+  el(".prev", elPar).addEventListener("click", prev);
+  el(".next", elPar).addEventListener("click", next);
+});
+
+
+  </script>
+
+  <script>
+
+  function showWinnipegFlights(){
+    window.location.href = "http://127.0.0.1:8000/api/departureFlights/?trip=ROUNDTRIP&from=MUC&to=DEL&departure=2025-02-12&return=2025-02-20"
+  }
+
+  
+
+
+
+
+  </script>
+
+  
+  
+
+</body>
+</html>

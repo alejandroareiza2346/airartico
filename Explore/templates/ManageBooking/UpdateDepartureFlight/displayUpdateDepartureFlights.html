@@ -1,0 +1,233 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+   
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'misc2.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/explorePage.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <style>
+
+      .grid-container-footer {
+        display: grid;
+        grid-template-columns: auto auto auto auto;
+        gap: 5px;
+        padding: 20px;
+        padding-left:80px;
+       
+      }
+      .grid-container-footer > div {
+
+        color: white;
+        padding: 10px;
+        font-size: 15px;
+        text-align: left;
+      }
+      li {
+         list-style-type: none;
+        }
+
+
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #DDD;
+}
+
+tr:hover {background-color: #D6EEEE;}
+
+    </style>
+    
+</head>
+<body onload="displayDepartureFlights()">
+
+    <div class="header">
+
+        <div class="logo-div">
+        <a href="#default" class="logo">Air Arctic</a>
+        </div>
+        <div class="header-left">
+          <a class="active" href="/api/exploreTrip/">Search Flights</a>
+          <a href="/api/manageBooking/">Manage Booking</a>
+          <a href="/api/flightStatus/">Flight Status</a>
+        </div>
+        <div class="header-right">
+          {% if request.user.is_authenticated %}
+          <div class="dropdown">
+            <button class="btn1 btn1-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{request.user}}
+            </button>
+            <div class="dropdown-menu" id="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="#">Air Arctic Rewards</a>
+              <a class="dropdown-item" href="#">Profile</a>
+              <a class="dropdown-item" href="/api/logout/">Logout</a>
+            </div>
+          </div>
+          {% else %}
+          <a href ="/api/loginPage/">Login</a>
+          <a href="/api/register/">Join Now</a>
+          {% endif %}
+          
+    
+        </div>
+      </div>
+      
+
+ <p id="url" style="color: white;">{{ request.get_full_path }}</p>
+
+<script>
+ 
+var url =  "http://127.0.0.1:8000"+document.getElementById('url').innerHTML;
+
+ var jsUrl = new URL(window.location.href);
+
+
+ var from = jsUrl.searchParams.get("from");
+ var to = jsUrl.searchParams.get("to")
+ var trip = jsUrl.searchParams.get("trip");
+ var departure = jsUrl.searchParams.get("departure");
+
+
+
+
+console.log(from);
+console.log(to)
+console.log(departure)
+
+
+async function displayDepartureFlights() { 
+    
+    let flightObj = await getFlights(from, to, departure)
+    document.getElementById('flightData').innerHTML=flightObj.map((flight) => 
+                
+        `<tr>
+            <td>${flight.id}</td>
+            <td>${flight.flightNumber}</td>
+            <td>${flight.departureAirport.iataCode}</td>
+            <td>${flight.destinationAirport.iataCode}</td>
+            <td>${flight.departureDate}</td>
+            <td>${flight.departureTime}</td>
+            <td>${flight.arrivalDate}</td>
+            <td>${flight.arrivalTime}</td>
+            <td>${flight.price}</td>
+            
+            <td><input type="button"  value="Select Flight" onClick="saveFlightId(${flight.id})"></td>  
+        </tr>`   
+
+    ).join("");
+
+}
+
+function saveFlightId(selectedFlightId){
+     
+  var flight_id = selectedFlightId
+
+    $.ajax({
+        type: "GET",
+        url: "{% url 'submitModifydepartureform' %}", 
+        data: {
+            "flight_id" : flight_id,
+        },
+        success: function (data) {
+            //window.location.href = "{% url 'submitdepartureform' %}"
+            window.location.href = "/api/modifySelectedDepartureFlight/?flightId="+flight_id;
+        },
+        failure: function () {
+            alert("failure");
+        }
+    });
+}
+
+</script>
+
+<div class = "departureFlights" style="min-height: 650px;" >
+
+    <h2>Modify Departure Flight</h2>
+
+        <table style="border: 2px solid black;">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Flight Number</th>
+                    <th>Departure Airport</th>
+                    <th>Destination Airport</th>
+                    <th>Departure Date</th>
+                    <th>Departure Time</th>
+                    <th>Arrival Date</th>
+                    <th>Arrival Time</th>
+                    <th>Price</th>
+                    <th>Select Flight</th>
+                </tr>
+            </thead>
+            <tbody id="flightData" >
+                <tr style="border: 1px solid black;"> 
+                </tr>
+        
+            </tbody>
+        </table>
+        </div>
+
+        <div class = "pre-footer" style="background-color: black; color: white;  padding: 10px; padding-left:80px; font-size:20px; "> <h5>Air Arctic > Select Departure Flight</h5></div> 
+<div class="footer">
+  <div class="grid-container-footer">
+    <div> <h6>About</h6>
+          <li>About Us</li>
+          <li>Careers</li>
+    </div>
+    <div> <h6>Manage</h6>
+      <li>Check In</li>
+      <li>Manage Your Flight</li>
+      <li>Flight Status</li>
+    </div>
+    <div> <h6>Book</h6>
+      <li>Book Your Flight</li>
+      <li>Search For Flight</li>
+      <li>Planning Your Trip</li>
+    </div> 
+    <div> <h6>Loyalty</h6>
+      <li>Login Into Air Arctic Rewards</li>
+      <li>Join Air Arctic Rewards</li>
+    </div>
+    <div> <h6>Subscribe To Our Special Offers</h6><br>
+      <form method = "post">
+        {% csrf_token %}
+        <input type="text" id="subscribeEmail" name="subscribeEmail" value="{{subscribeEmail}}" placeholder="Email Address" >
+        <input type="submit" value="Subscribe" ></input>
+        </form>
+    </div>
+    <div> <h6>Before You Fly</h6>
+      <li>Baggage</li>
+      <li>Visa & Passport Info</li>
+      <li>Seats</li>
+    </div>  
+    <div> <h6>Help</h6>
+      <li>Help Centre</li>
+      <li>Contact an Agent</li>
+    </div>
+    <div><h6>Feedback</h6>
+      <form method = "post">
+        {% csrf_token %}
+        <input type="submit" value="Site Feedback" ></input>
+        </form>
+    </div>
+  </div>
+  </div>
+</div>
+
+
+    
+</body>
+</html>

@@ -1,0 +1,340 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+ 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'misc2.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/selectedDeparture.css' %}">
+    <link rel="stylesheet" href="{% static 'css/explorePage.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <style>
+
+      
+      th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #DDD;
+      }
+      
+      tr:hover {background-color: #D6EEEE;}
+	  
+
+.item1 { grid-area: header1; }
+.item2 { grid-area: menu; }
+.item3 { grid-area: main; }
+.item4 { grid-area: right; }
+.item5 { grid-area: footer1; }
+.item6 { grid-area: footer2; }
+.item7 { grid-area: footer3; }
+.item8 { grid-area: header2; }
+.item9 { grid-area: header3; }
+
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    'menu header1 header2 header3 right '
+    'menu main main main  right'
+    'menu footer1 footer2 footer3 right ';
+  gap: 10px;
+  background-color: white;
+  padding: 5px;
+}
+
+.grid-container > div {
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  padding: 10px 0;
+  font-size: 30px;
+}
+
+.lineImg {
+
+  height: 40px;
+  width: 100%;
+
+}
+
+.airplaneImg {
+  height: 150px;
+  width: 50%;
+}
+
+.item3 {
+  height: 50px;
+}
+
+.item1, .item8, .item9 {
+  height: 50px;
+}
+.item5, .item6, .item7 {
+  height: 50px;
+}
+
+.item2, .item4 {
+
+  height: 190px;
+}
+
+.grid-container-footer {
+        display: grid;
+        grid-template-columns: auto auto auto auto;
+        gap: 5px;
+        padding: 20px;
+        padding-left:80px;
+       
+      }
+      .grid-container-footer > div {
+
+        color: white;
+        padding: 10px;
+        font-size: 15px;
+        text-align: left;
+      }
+      li {
+         list-style-type: none;
+        }
+
+          </style>
+    
+</head>
+<body onload="displaySelectedDepartureFlight()">
+  <div class="header">
+
+    <div class="logo-div">
+    <a href="#default" class="logo">Air Arctic</a>
+    </div>
+    <div class="header-left">
+      <a class="active" href="/api/exploreTrip/">Search Flights</a>
+      <a href="/api/manageBooking/">Manage Booking</a>
+      <a href="/api/flightStatus/">Flight Status</a>
+    </div>
+    <div class="header-right">
+      {% if request.user.is_authenticated %}
+      <div class="dropdown">
+        <button class="btn1 btn1-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{request.user}}
+        </button>
+        <div class="dropdown-menu" id="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" href="#">Air Arctic Rewards</a>
+          <a class="dropdown-item" href="#">Profile</a>
+          <a class="dropdown-item" href="/api/logout/">Logout</a>
+        </div>
+      </div>
+      {% else %}
+      <a href ="/api/loginPage/">Login</a>
+      <a href="/api/register/">Join Now</a>
+      {% endif %}
+      
+
+    </div>
+  </div>
+
+
+<p id="url" style="color: white;">{{ request.get_full_path }}</p>
+
+<script>
+
+var url =  "http://127.0.0.1:8000"+document.getElementById('url').innerHTML;
+var jsUrl = new URL(window.location.href);
+var flightId = jsUrl.searchParams.get("flightId");
+var trip = jsUrl.searchParams.get("trip");
+
+console.log("url " + jsUrl)
+console.log("flight id is:" + flightId)
+console.log("Trip is:" + trip)
+console.log(url)
+
+async function displaySelectedDepartureFlight() { 
+
+ let flightObj = await getFlightById(flightId)
+
+    console.log("coming from selected departing func")
+    console.log(flightObj)
+
+    flightObjStr = JSON.stringify(flightObj)
+
+    d_f = flightObj['flightNumber']
+    d_depart_airport = flightObj['departureAirport']['iataCode']
+    d_dest_Airport = flightObj['destinationAirport']['iataCode']
+    d_depart_date = flightObj['departureDate']
+    d_arrival_date = flightObj['arrivalDate']
+
+    document.getElementById('d1').innerHTML = d_f;
+    document.getElementById('d2').innerHTML = d_depart_airport;
+    document.getElementById('d3').innerHTML = d_dest_Airport;
+    document.getElementById('d4').innerHTML = d_depart_date;
+    document.getElementById('d5').innerHTML = d_arrival_date;
+
+    var parsedData = JSON.parse(flightObjStr);
+
+    airCraftModelStr = JSON.stringify(flightObj.airCraft.aircraftModel)
+    departureAirportStr = JSON.stringify(flightObj.departureAirport.iataCode)
+    destinationAirportStr = JSON.stringify(flightObj.destinationAirport.iataCode)
+
+    //document.getElementById('output').innerHTML = flightObjStr;
+ 
+}
+
+async function getFlightById(flightId) {
+
+  let flight =await  fetch(`http://127.0.0.1:8000/api/flight/${flightId}`);
+  flight = await flight.json()
+  console.warn(flight)
+
+  var from = flight.departureAirport.iataCode
+  var to = flight.destinationAirport.iataCode
+
+  document.getElementById('fromForm').value =  from
+  document.getElementById('toForm').value =  to
+
+  console.log(from)
+  return flight
+}
+
+async function retrieveFromValue(flightId){
+
+  var fObj = await getFlightById(flightId)
+  var from = fObj.departureAirport.iataCode
+  var fromStr = JSON.stringify(from)
+
+  return from;
+}
+
+async function retrieveToValue(flightId){
+
+  var fObj = await getFlightById(flightId)
+  var to = fObj.destinationAirport.iataCode
+  var toStr = JSON.stringify(to)
+
+  return to;
+}
+
+</script>
+
+<div class="selectedDepartingFlight" style="min-height: 650px;">
+
+<h2> Selected Departing Flight</h2>
+<!--
+<p id="output">
+</p>
+-->
+
+
+<!-- Experiment ---------------------------------------->
+
+<div class="grid-container">
+  <div class="item1" id="d2"></div>
+  <div class="item2"><img src="{% static "images/airplane.jpg" %}" class="airplaneImg" alt="Hi!" /> </div>
+  <div class="item3"><img src="{% static "images/connectingLine.jpg" %}" class="lineImg" alt="Hi!" /></div>  
+  <div class="item4"><img src="{% static "images/airplane.jpg" %}" class="airplaneImg" alt="Hi!" /></div>
+  <div class="item5" id="d4">Footer</div>
+  <div class="item6">Footer</div>
+  <div class="item7" id="d5">Footer</div>
+  <div class="item8" id="d1" ></div>
+  <div class="item9" id="d3">Header</div>
+</div>
+
+
+<!-- Experiment End---------------------------------------->
+
+
+
+
+<!--          -----------------------------------------------------------                          -->
+
+<form id="returnform"  method = "post" action="{% url 'submitreturnform' %}">
+    {% csrf_token %}
+
+  <input type="text" id="fromForm" name="fromForm"hidden ><br>
+  <input type="text" id="toForm" name="toForm"  hidden><br><br>
+  <button type="submit" value="Search Flights" > Search Returning Flights</button>  
+</form> 
+
+<!--          -----------------------------------------------------------                          -->
+
+<form id ="itenaryform"  method = "post" action="{% url 'submititenaryform' %}">
+  {% csrf_token %}  
+
+  <input type="text" id="departingFlightId" name="departingFlightId" hidden ><br>
+  <input type="text" id="returningFlightId" name="returningFlightId"  hidden><br><br>
+  <button type="submit" value="View Trip" > View Trip</button>
+</form>
+
+
+<script>
+
+$('form').hide()
+
+//trip needs to come dynamically
+var tripD = "ROUNDTRIP";
+
+if (tripD == "ONEWAY") {
+$('#itenaryform').show();
+}
+
+else if (tripD == "ROUNDTRIP") {
+$('#returnform').show();
+}
+
+</script>
+
+</div>
+
+<div class = "pre-footer" style="background-color: black; color: white;  padding: 10px; padding-left:80px; font-size:20px; "> <h5>Air Arctic > Confirm Departing Flight</h5></div> 
+<div class="footer">
+  <div class="grid-container-footer">
+    <div> <h6>About</h6>
+          <li>About Us</li>
+          <li>Careers</li>
+    </div>
+    <div> <h6>Manage</h6>
+      <li>Check In</li>
+      <li>Manage Your Flight</li>
+      <li>Flight Status</li>
+    </div>
+    <div> <h6>Book</h6>
+      <li>Book Your Flight</li>
+      <li>Search For Flight</li>
+      <li>Planning Your Trip</li>
+    </div> 
+    <div> <h6>Loyalty</h6>
+      <li>Login Into Air Arctic Rewards</li>
+      <li>Join Air Arctic Rewards</li>
+    </div>
+    <div> <h6>Subscribe To Our Special Offers</h6><br>
+      <form method = "post">
+        {% csrf_token %}
+        <input type="text" id="subscribeEmail" name="subscribeEmail" value="{{subscribeEmail}}" placeholder="Email Address" >
+        <input type="submit" value="Subscribe" ></input>
+        </form>
+    </div>
+    <div> <h6>Before You Fly</h6>
+      <li>Baggage</li>
+      <li>Visa & Passport Info</li>
+      <li>Seats</li>
+    </div>  
+    <div> <h6>Help</h6>
+      <li>Help Centre</li>
+      <li>Contact an Agent</li>
+    </div>
+    <div><h6>Feedback</h6>
+      <form method = "post">
+        {% csrf_token %}
+        <input type="submit" value="Site Feedback" ></input>
+        </form>
+    </div>
+  </div>
+  </div>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,412 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+   
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'misc2.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/explorePage.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <style>
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #DDD;
+}
+
+tr:hover {background-color: #D6EEEE;}
+
+.grid-container-footer {
+        display: grid;
+        grid-template-columns: auto auto auto auto;
+        gap: 5px;
+        padding: 20px;
+        padding-left:80px;
+       
+      }
+      .grid-container-footer > div {
+
+        color: white;
+        padding: 10px;
+        font-size: 15px;
+        text-align: left;
+      }
+      li {
+         list-style-type: none;
+        }
+
+</style>
+    
+</head>
+<body onload="displayItenary()">
+
+  <div class="header">
+
+    <div class="logo-div">
+    <a href="#default" class="logo">Air Arctic</a>
+    </div>
+    <div class="header-left">
+      <a class="active" href="/api/exploreTrip/">Search Flights</a>
+      <a href="/api/manageBooking/">Manage Booking</a>
+      <a href="/api/flightStatus/">Flight Status</a>
+    </div>
+    <div class="header-right">
+      {% if request.user.is_authenticated %}
+      <div class="dropdown">
+        <button class="btn1 btn1-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{request.user}}
+        </button>
+        <div class="dropdown-menu" id="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" href="#">Air Arctic Rewards</a>
+          <a class="dropdown-item" href="#">Profile</a>
+          <a class="dropdown-item" href="/api/logout/">Logout</a>
+        </div>
+      </div>
+      {% else %}
+      <a href ="/api/loginPage/">Login</a>
+      <a href="/api/register/">Join Now</a>
+      {% endif %}
+      
+
+    </div>
+  </div>
+ 
+<p id="url" style="color: white;">{{ request.get_full_path }}</p>
+
+<script>
+
+var url =  "http://127.0.0.1:8000"+document.getElementById('url').innerHTML;
+
+var jsUrl = new URL(window.location.href);
+var flightId = jsUrl.searchParams.get("flightId");
+
+var departingFlightId = jsUrl.searchParams.get("departingFlight");
+var returningFlightId = jsUrl.searchParams.get("returningFlight");
+var passangers = jsUrl.searchParams.get("passanger");
+var tripType = jsUrl.searchParams.get("trip");
+
+console.log("url " + jsUrl)
+console.log("flight id is:" + flightId)
+console.log(url)
+
+console.log(tripType)
+
+async function displayItenary() { 
+
+
+var tripD = tripType
+
+    
+ let trip = await makeTrip(departingFlightId, returningFlightId, tripD)
+
+
+    console.log("coming from trip func")
+    console.log(trip)
+
+    tripStr = JSON.stringify(trip)
+
+    trip_id = JSON.stringify(trip['id'])
+
+
+    d_f = trip['departingFlight']['flightNumber']
+    d_depart_airport = trip['departingFlight']['departureAirport']['iataCode']
+    d_dest_Airport = trip['departingFlight']['destinationAirport']['iataCode']
+    d_depart_date = trip['departingFlight']['departureDate']
+    d_arrival_date = trip['departingFlight']['arrivalDate']
+    d_price = trip['departingFlight']['price']
+
+
+    r_f = trip['returningFlight']['flightNumber']
+    r_depart_airport = trip['returningFlight']['departureAirport']['iataCode']
+    r_dest_Airport = trip['returningFlight']['destinationAirport']['iataCode']
+    r_depart_date = trip['returningFlight']['departureDate']
+    r_arrival_date = trip['returningFlight']['arrivalDate']
+    r_price = trip['returningFlight']['price']
+
+
+
+
+
+    document.getElementById('output').innerHTML = trip;
+   
+
+    document.getElementById('d1').innerHTML = d_f;
+    document.getElementById('d2').innerHTML = d_depart_airport;
+    document.getElementById('d3').innerHTML = d_dest_Airport;
+    document.getElementById('d4').innerHTML = d_depart_date;
+    document.getElementById('d5').innerHTML = d_arrival_date;
+
+
+
+    document.getElementById('r1').innerHTML = r_f;
+    document.getElementById('r2').innerHTML = r_depart_airport;
+    document.getElementById('r3').innerHTML = r_dest_Airport;
+    document.getElementById('r4').innerHTML = r_depart_date;
+    document.getElementById('r5').innerHTML = r_arrival_date;
+    document.getElementById('passangerCount').innerHTML = passangers;
+
+    document.getElementById('totalPrice').innerHTML = (parseFloat(d_price)+parseFloat(r_price))*passangers;
+
+    
+}
+
+
+async function displayOneWayItenary() { 
+
+
+var tripD = tripType
+
+    
+ let trip = await makeTrip(departingFlightId, returningFlightId, tripD)
+
+
+    console.log("coming from trip func")
+    console.log(trip)
+
+    tripStr = JSON.stringify(trip)
+
+    trip_id = JSON.stringify(trip['id'])
+
+
+    d_f = trip['departingFlight']['flightNumber']
+    d_depart_airport = trip['departingFlight']['departureAirport']['iataCode']
+    d_dest_Airport = trip['departingFlight']['destinationAirport']['iataCode']
+    d_depart_date = trip['departingFlight']['departureDate']
+    d_arrival_date = trip['departingFlight']['arrivalDate']
+    d_price = trip['departingFlight']['price']
+
+    //document.getElementById('output').innerHTML = trip;
+   
+
+    document.getElementById('d1').innerHTML = d_f;
+    document.getElementById('d2').innerHTML = d_depart_airport;
+    document.getElementById('d3').innerHTML = d_dest_Airport;
+    document.getElementById('d4').innerHTML = d_depart_date;
+    document.getElementById('d5').innerHTML = d_arrival_date;
+
+
+   document.getElementById('totalPrice').innerHTML = (parseFloat(d_price))*passangers;
+
+    
+}
+
+async function itenaryLoadSelection(){
+
+  var tripValue = tripType
+  console.log(tripValue+"value is")
+
+ if (tripValue == 'ONEWAY'){
+    console.log("oneway fun used")
+    displayOneWayItenary()
+ }
+ else if(tripValue == 'ROUNDTRIP'){
+  console.log("roundtrip fun used")
+    displayItenary()
+ }
+
+}
+ 
+
+
+async function makeTrip(selectedDepartingFlight, selectedReturningFlight, trip) { 
+
+var tripD = tripType
+        
+            
+const rawResponse = await fetch(`http://127.0.0.1:8000/api/trips/?trip=${tripD}`, {
+  method: 'POST',
+  body: JSON.stringify({
+    "departingFlight_id": selectedDepartingFlight,
+    "returningFlight_id": selectedReturningFlight,
+
+  }),
+  headers: {
+    'Content-Type': 'application/json; charset=UTF-8',
+    'X-CSRFToken' : 'csrftoken',
+ },
+});
+const content = await rawResponse.json();
+
+console.log(content);
+return content;
+
+
+}
+
+function sendTripData(){
+     
+     $.ajax({
+         type: "POST",
+         url: "{% url 'submititenaryPage' %}", 
+         data: {
+             "tripStr" : tripStr,
+             "trip_id" : trip_id,
+             csrfmiddlewaretoken: '{{ csrf_token }}'
+         },
+     
+         success: function (data) {
+ 
+             
+             alert("success")
+             return window.location.href = "{% url 'redirectPassangerPage' %}"
+ 
+             
+         },
+         failure: function () {
+             alert("failure");
+         }
+     });
+
+    
+
+    }
+
+</script>
+
+<div class="viewTrip" style="min-height: 650px;">
+
+<h2> Your Itenary</h2><br>
+<!--<p id="output"></p>-->
+
+
+
+<table>
+
+  <h4>Departing Flight</h4>
+
+   
+  <tr>
+    <th>Flight No</th>
+    <th>Departure Airport</th>
+    <th>Destination Airport</th>
+    <th>Departure Date</th>
+    <th>Arrival Date</th>
+  </tr>
+  <tr>
+    <td id="d1"></td>
+    <td id="d2"></td>
+    <td id="d3"></td>
+    <td id="d4"></td>
+    <td id="d5"></td>
+  </tr>
+
+</table>
+<br>
+  <h4>Returning Flight</h4>
+
+<table>
+  <tr>
+    <th>Flight No</th>
+    <th>Departure Airport</th>
+    <th>Destination Airport</th>
+    <th>Departure Date</th>
+    <th>Arrival Date</th>
+  </tr>
+  <tr>
+    <td id="r1"></td>
+    <td id="r2"></td>
+    <td id="r3"></td>
+    <td id="r4"></td>
+    <td id="r5"></td>
+  </tr>
+
+</table>
+
+
+<br>
+Total Price for <p id="passangerCount"> </p> Passangers :  CAD $
+<p id = "totalPrice"></p>
+<!--
+<form  method = "post" action="{% url 'submititenaryPage' %}">
+  {% csrf_token %}
+ 
+  <input type="text" id="output" name="output" hidden >
+
+
+<button type="button" value="toPassengerPage" onclick="sendTripData()"> Continue </button>
+
+</form>
+-->
+{% if request.user.is_authenticated %}
+
+<form  method = "post" action="{% url 'submititenaryPage' %}">
+  {% csrf_token %}
+  <input type="text" id="output" name="output" hidden >
+  <button type="button" value="toPassengerPage" onclick="sendTripData()"> Continue </button>
+</form>
+
+{% else %}
+<a href ="/api/loginPage/" type="submit">LogIn</a><br><br>
+
+<form  method = "post" action="{% url 'submititenaryPage' %}">
+  {% csrf_token %}
+  <input type="text" id="output" name="output" hidden >
+  <button type="button" value="toPassengerPage" onclick="sendTripData()"> Continue as Guest </button>
+</form>
+</div>
+
+{% endif %}
+<br>
+<br>
+<br>
+
+<div class = "pre-footer" style="background-color: black; color: white;  padding: 10px; padding-left:80px; font-size:20px; "> <h5>Air Arctic > Itenary</h5></div> 
+<div class="footer">
+  <div class="grid-container-footer">
+    <div> <h6>About</h6>
+          <li>About Us</li>
+          <li>Careers</li>
+    </div>
+    <div> <h6>Manage</h6>
+      <li>Check In</li>
+      <li>Manage Your Flight</li>
+      <li>Flight Status</li>
+    </div>
+    <div> <h6>Book</h6>
+      <li>Book Your Flight</li>
+      <li>Search For Flight</li>
+      <li>Planning Your Trip</li>
+    </div> 
+    <div> <h6>Loyalty</h6>
+      <li>Login Into Air Arctic Rewards</li>
+      <li>Join Air Arctic Rewards</li>
+    </div>
+    <div> <h6>Subscribe To Our Special Offers</h6><br>
+      <form method = "post">
+        {% csrf_token %}
+        <input type="text" id="subscribeEmail" name="subscribeEmail" value="{{subscribeEmail}}" placeholder="Email Address" >
+        <input type="submit" value="Subscribe" ></input>
+        </form>
+    </div>
+    <div> <h6>Before You Fly</h6>
+      <li>Baggage</li>
+      <li>Visa & Passport Info</li>
+      <li>Seats</li>
+    </div>  
+    <div> <h6>Help</h6>
+      <li>Help Centre</li>
+      <li>Contact an Agent</li>
+    </div>
+    <div><h6>Feedback</h6>
+      <form method = "post">
+        {% csrf_token %}
+        <input type="submit" value="Site Feedback" ></input>
+        </form>
+    </div>
+  </div>
+  </div>
+</div>
+
+</body>
+</html>

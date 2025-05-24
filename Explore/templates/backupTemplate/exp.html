@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+
+     
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{% static 'misc2.js' %}"></script>
+
+    <style>
+    table,th, td {
+    padding: 15px;
+      }
+    </style>
+    
+
+</head>
+<body>
+
+<h2>Explore</h2>
+
+<p>URL of this page: {{ request.get_full_path }}</p>
+
+<form  method = "post" action="{% url 'submitexploreform' %}">
+    {% csrf_token %}
+  <label for="trip">Trip:</label><br>
+  <select name="trip" id="trip" name="{{trip}}" >
+    <option value="ONEWAY">ONEWAY</option>
+    <option value="ROUNDTRIP">ROUNDTRIP</option>
+  </select><br>
+  <label for="from">Travelling from:</label><br>
+  <input type="text" id="from" name="from" value="{{from}}" ><br>
+  <label for="to">Travelling To:</label><br>
+  <input type="text" id="to" name="to" value="{{to}}" ><br><br>
+
+
+
+  
+  <input type="button" value="Search" onClick="displayDepartingFlights(), storesTripData(from.value, to.value)" > 
+  <button type="submit" value="Button Search" > Button</button>
+
+</form> 
+
+   <!--Java Script Code-->
+<script>
+
+async function displayDepartingFlights() { 
+    
+    let flightObj = await getFlights(from.value, to.value)
+    document.getElementById('flightData').innerHTML=flightObj.map((flight) => 
+                
+        `<tr>
+
+            <td>${flight.id}</td>
+            <td>${flight.flightNumber}</td>
+            <td>${flight.departureAirport.iataCode}</td>
+            <td>${flight.destinationAirport.iataCode}</td>
+            <td>${flight.departureDate}</td>
+            <td>${flight.departureTime}</td>
+            <td>${flight.arrivalDate}</td>
+            <td>${flight.arrivalTime}</td>
+            <td><input type="button"  value="Select Flight" onClick="storeDepartingFlightId(${flight.id}, takeToReturningFlightPage())"> </td>
+
+        </tr>`
+
+    ).join("");
+
+        console.log("coming from exploreTrip func")
+        console.log(flightObj)
+}
+
+</script>
+
+
+<h2> Best Deparing Flights</h2>
+
+
+<table style="border: 2px solid black;">
+       
+    
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Flight Number</th>
+            <th>Departure Airport</th>
+            <th>Destination Airport</th>
+            <th>Departure Date</th>
+            <th>Departure Time</th>
+            <th>Arrival Date</th>
+            <th>Arrival Time</th>
+            <th>Select Flight</th>
+        </tr>
+    </thead>
+    <tbody id="flightData" >
+        <tr style="border: 1px solid black;">
+
+
+
+        </tr>
+
+    </tbody>
+    </table>
+    <br>
+
+    <input type="button" value="Search Returning Flights" onClick="getReturningFlights(from.value, to.value)" > 
+
+
+    
+
+
+
+    
+
+    
+
+
+    <h2> Best Returning Flights</h2>
+
+
+        <table style="border: 2px solid black;">
+               
+            
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Flight Number</th>
+                    <th>Departure Airport</th>
+                    <th>Destination Airport</th>
+                    <th>Departure Date</th>
+                    <th>Departure Time</th>
+                    <th>Arrival Date</th>
+                    <th>Arrival Time</th>
+                    <th>Select Flight</th>
+                </tr>
+            </thead>
+            <tbody id="returningFlightData" >
+                <tr style="border: 1px solid black;">
+                    
+                </tr>
+            
+            <script>
+        function takeToReturningFlightPage(){
+          return window.location.href = "{% url 'displayDepartureFlights' %}"
+    
+          }
+            </script>
+
+<input type="button" value="View departing flights" onClick="takeToReturningFlightPage()" > 
+
+
+
+
+
+    </tbody>
+</table>
+
+</body>
+</html>
