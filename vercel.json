@@ -1,14 +1,14 @@
 {
     "builds": [
         {
-            "src": "AirArctic/wsgi.py",
+            "src": "api/index.py",
             "use": "@vercel/python"
         }
     ],
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "AirArctic/wsgi.py"
+            "dest": "api/index.py"
         }
     ]
 }
