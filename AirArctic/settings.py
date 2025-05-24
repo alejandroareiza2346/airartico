@@ -22,6 +22,8 @@ Password: password
 
 from pathlib import Path
 import dj_database_url
+import os
+from django.core.wsgi import get_wsgi_application
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -176,3 +178,7 @@ CSRF_HEADER_NAME = 'X-CSRFTOKEN'
 CSRF_TRUSTED_ORIGIN = ['http://127.0.0.1', 'http://.localhost']
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SECURE= False
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'AirArctic.settings')
+
+application = get_wsgi_application()
